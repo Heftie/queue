@@ -17,19 +17,22 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stdint.h"
-#include "stdlib.h"
-#include "stddef.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
 /* Exported types ------------------------------------------------------------*/
 typedef enum {
     QUEUE_OK = 0,
     QUEUE_FULL,
     QUEUE_EMPTY,
+    QUEUE_BUFFER_ERROR,
     QUEUE_ERROR
 } queue_status_t;
 
 typedef struct {
-    uint8_t *buffer;
+    void *buffer;
+    size_t element_size;
     uint32_t size;
     uint32_t head;
     uint32_t tail;
@@ -41,9 +44,9 @@ typedef struct {
 /* Exported variables --------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
-queue_status_t queue_init(queue_t *queue, uint8_t *buffer, uint32_t size);
-queue_status_t queue_enqueue(queue_t *queue, uint8_t data);
-queue_status_t queue_dequeue(queue_t *queue, uint8_t *data);
+queue_status_t queue_init(queue_t *queue, void *buffer, uint32_t size, size_t element_size);
+queue_status_t queue_enqueue(queue_t *queue, const void *data);
+queue_status_t queue_dequeue(queue_t *queue, void *data);
 
 #ifdef __cplusplus
 }

@@ -28,17 +28,25 @@
  * @param queue   Pointer to the queue structure
  * @param buffer  Pointer to the buffer array where the data will be stored
  * @param size    Size of the buffer array
+ * @param element_size Size of each element in the buffer
  * @return queue_status_t 
  */
-queue_status_t queue_init(queue_t *queue, uint8_t *buffer, uint32_t size)
+queue_status_t queue_init(queue_t *queue, void *buffer, uint32_t size, size_t element_size)
 {
-    if (queue == NULL || buffer == NULL || size == 0)
+    if (queue == NULL || buffer == NULL || size == 0 || element_size == 0)
     {
         return QUEUE_ERROR;
     }
+    //Check if the buffer is large enough to store the elements or multiple elements
+    if (size < element_size || size % element_size != 0)
+    {
+        return QUEUE_BUFFER_ERROR;
+    }
+
 
     queue->buffer = buffer;
     queue->size = size;
+    queue->element_size = element_size;
     queue->head = 0;
     queue->tail = 0;
     queue->count = 0;
@@ -54,10 +62,10 @@ queue_status_t queue_init(queue_t *queue, uint8_t *buffer, uint32_t size)
  * @param data    Pointer to the data variable where the data will be stored
  * @return queue_status_t 
  */
-queue_status_t queue_enqueue(queue_t *queue, uint8_t data)
+queue_status_t queue_enqueue(queue_t *queue, const void *data)
 {
-    // Check first if the queue exists to prevent null pointer dereference
-    if (queue == NULL)
+    // Check first if the queue and data exists to prevent null pointer dereference
+    if (queue == NULL || data == NULL)
     {
         return QUEUE_ERROR;
     }
@@ -71,7 +79,7 @@ queue_status_t queue_enqueue(queue_t *queue, uint8_t data)
         return QUEUE_FULL;
     }
 
-    queue->buffer[queue->tail] = data;
+    memcpy((uint8_t*)queue->buffer + (queue->tail * queue->element_size), data, queue->element_size);
     queue->tail = (queue->tail + 1) % queue->size;
     queue->count++;
 
@@ -86,10 +94,10 @@ queue_status_t queue_enqueue(queue_t *queue, uint8_t data)
  * @param data    Pointer to the data variable where the data will be stored
  * @return queue_status_t 
  */
-queue_status_t queue_dequeue(queue_t *queue, uint8_t *data)
+queue_status_t queue_dequeue(queue_t *queue, void *data)
 {
-    // Check first if the queue exists to prevent null pointer dereference
-    if (queue == NULL)
+    // Check first if the queue and data exists to prevent null pointer dereference
+    if (queue == NULL || data == NULL)
     {
         return QUEUE_ERROR;
     }
@@ -103,7 +111,7 @@ queue_status_t queue_dequeue(queue_t *queue, uint8_t *data)
         return QUEUE_EMPTY;
     }
 
-    *data = queue->buffer[queue->head];
+    memcpy(data, (uint8_t*)queue->buffer + (queue->head * queue->element_size), queue->element_size);
     queue->head = (queue->head + 1) % queue->size;
     queue->count--;
 
