@@ -19,6 +19,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stdint.h"
 #include "stdlib.h"
+#include "stddef.h"
 /* Exported types ------------------------------------------------------------*/
 typedef enum {
     QUEUE_OK = 0,

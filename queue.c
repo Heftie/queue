@@ -56,7 +56,12 @@ queue_status_t queue_init(queue_t *queue, uint8_t *buffer, uint32_t size)
  */
 queue_status_t queue_enqueue(queue_t *queue, uint8_t data)
 {
-    if (queue == NULL || queue->buffer == NULL || queue->size == 0)
+    // Check first if the queue exists to prevent null pointer dereference
+    if (queue == NULL)
+    {
+        return QUEUE_ERROR;
+    }
+    if (queue->buffer == NULL || queue->size == 0)
     {
         return QUEUE_ERROR;
     }
@@ -83,7 +88,12 @@ queue_status_t queue_enqueue(queue_t *queue, uint8_t data)
  */
 queue_status_t queue_dequeue(queue_t *queue, uint8_t *data)
 {
-    if (queue == NULL || queue->buffer == NULL || queue->size == 0)
+    // Check first if the queue exists to prevent null pointer dereference
+    if (queue == NULL)
+    {
+        return QUEUE_ERROR;
+    }
+    if (queue->buffer == NULL || queue->size == 0)
     {
         return QUEUE_ERROR;
     }

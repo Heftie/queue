@@ -50,11 +50,12 @@ TEST(QueueTest, Null) {
     queue_t queue;
     EXPECT_EQ(queue_init(&queue, NULL, 10), QUEUE_ERROR);
     EXPECT_EQ(queue_init(&queue, buffer, 0), QUEUE_ERROR);
+    EXPECT_EQ(queue_init(&queue, buffer, 10), QUEUE_OK);
     EXPECT_EQ(queue_enqueue(NULL, 1), QUEUE_ERROR);
-    EXPECT_EQ(queue_enqueue(&queue, 1), QUEUE_ERROR);
+    EXPECT_EQ(queue_enqueue(&queue, 1), QUEUE_OK);
     uint8_t item = 0;
     EXPECT_EQ(queue_dequeue(NULL, &item), QUEUE_ERROR);
-    EXPECT_EQ(queue_dequeue(&queue, &item), QUEUE_ERROR);
+    EXPECT_EQ(queue_dequeue(&queue, &item), QUEUE_OK);
 }
 
 int main(int argc, char **argv) {
