@@ -1,0 +1,4 @@
+# exclude folders
+build/
+googletest/
+.vscode/
